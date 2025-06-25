@@ -1,0 +1,28 @@
+{
+  "name": "oh-sht",
+  "version": "0.1.0",
+  "description": "Web component button used to record site issues to configurable backend",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "echo \"Build script to be implemented\"",
+    "start:demo": "cd demo-app && npm start",
+    "install:all": "npm install && cd demo-app && npm install && ln -sf .. node_modules/oh-sht",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "web-component",
+    "feedback",
+    "button",
+    "custom-element"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willosbourne/oh-sht.git"
+  },
+  "bugs": {
+    "url": "https://github.com/willosbourne/oh-sht/issues"
+  },
+  "homepage": "https://github.com/willosbourne/oh-sht#readme"
+}

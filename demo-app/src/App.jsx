@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -13,8 +13,31 @@ function App() {
       other: false
     }
   });
-  
+
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Use effect to programmatically create and mount the web component
+  useEffect(() => {
+    // Check if the custom element is defined
+    if (customElements.get('oh-sht-button')) {
+      const container = document.getElementById('oh-sht-button-container');
+      if (container) {
+        // Clear any existing content
+        container.innerHTML = '';
+
+        // Create the web component
+        const ohShtButton = document.createElement('oh-sht-button');
+
+        // Set attributes
+        ohShtButton.setAttribute('backend-url', 'https://example.com/api/feedback');
+
+        // Append to container
+        container.appendChild(ohShtButton);
+      }
+    } else {
+      console.warn('oh-sht-button custom element not defined. Check the import.');
+    }
+  }, []); // Empty dependency array means this runs once after initial render
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,10 +61,10 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    
+
     // Show success message
     setShowSuccess(true);
-    
+
     // Reset form after submission
     setFormData({
       name: '',
@@ -55,7 +78,7 @@ function App() {
         other: false
       }
     });
-    
+
     // Hide success message after 3 seconds
     setTimeout(() => {
       setShowSuccess(false);
@@ -65,7 +88,7 @@ function App() {
   return (
     <div className="container">
       <h1>Customer Feedback Survey</h1>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name:</label>
@@ -78,7 +101,7 @@ function App() {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input
@@ -90,7 +113,7 @@ function App() {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="feedback">Your Feedback:</label>
           <textarea
@@ -102,7 +125,7 @@ function App() {
             required
           ></textarea>
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="satisfaction">Overall Satisfaction:</label>
           <select
@@ -118,7 +141,7 @@ function App() {
             <option value="very-dissatisfied">Very Dissatisfied</option>
           </select>
         </div>
-        
+
         <div className="form-group">
           <label>What are you interested in?</label>
           <div className="checkbox-group">
@@ -131,7 +154,7 @@ function App() {
               />
               Product Updates
             </label>
-            
+
             <label className="checkbox-label">
               <input
                 type="checkbox"
@@ -141,7 +164,7 @@ function App() {
               />
               New Features
             </label>
-            
+
             <label className="checkbox-label">
               <input
                 type="checkbox"
@@ -151,7 +174,7 @@ function App() {
               />
               Bug Reports
             </label>
-            
+
             <label className="checkbox-label">
               <input
                 type="checkbox"
@@ -163,16 +186,18 @@ function App() {
             </label>
           </div>
         </div>
-        
+
         <button type="submit">Submit Feedback</button>
       </form>
-      
+
       <div className={`success-message ${showSuccess ? 'visible' : ''}`}>
         Thank you for your feedback! We appreciate your input.
       </div>
-      
+
       {/* Add the Oh SHT button web component */}
-      <oh-sht-button backend-url="https://example.com/api/feedback"></oh-sht-button>
+      <div id="oh-sht-button-container">
+        {/* The web component will be mounted here using useEffect */}
+      </div>
     </div>
   );
 }

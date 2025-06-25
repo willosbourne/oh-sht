@@ -62,7 +62,19 @@ To run the demo application:
 npm run start:demo
 ```
 
-This will start a React application that demonstrates the usage of the `oh-sht-button` component.
+This will start a React application (using Vite) that demonstrates the usage of the `oh-sht-button` component.
+
+You can also build the demo app for production:
+
+```bash
+npm run build:demo
+```
+
+And preview the production build:
+
+```bash
+npm run preview:demo
+```
 
 ## Development
 
@@ -73,7 +85,7 @@ This will start a React application that demonstrates the usage of the `oh-sht-b
 
 ### Local Development
 
-For local development, a symlink is required to allow the demo app to import the web component. This is because Create React App's webpack configuration doesn't allow imports outside of the src/ directory.
+For local development, a symlink is required to allow the demo app to import the web component.
 
 The symlink is automatically created when you run the `install:all` script:
 
@@ -90,17 +102,18 @@ ln -s .. node_modules/oh-sht
 
 This creates a symlink in the demo app's node_modules directory that points to the root of the project, allowing the import to work through the node_modules path.
 
-If you encounter issues with the import, you can try using a direct path to the component:
+The demo app now uses Vite instead of Create React App, which provides more flexibility with imports. The component is imported in the demo app using:
 
 ```javascript
-// Instead of
-import 'oh-sht';
-
-// Use
-import '../node_modules/oh-sht/src/index.js';
+// Primary import path
+import('oh-sht/src/index.js')
+  .catch(error => {
+    // Fallback to relative path if needed
+    import('../node_modules/oh-sht/src/index.js')
+  });
 ```
 
-This approach works better with Create React App's webpack configuration, which restricts imports to be within the project's file system.
+Vite's import resolution is more flexible than webpack's, but we still maintain the symlink approach for compatibility.
 
 ### Building
 

@@ -1,28 +1,4 @@
-class OhShtButton extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-    this.isOpen = false;
-    this.backendUrl = this.getAttribute('backend-url') || '/api/feedback';
-  }
-
-  connectedCallback() {
-    this.render();
-    this.setupEventListeners();
-  }
-
-  static get observedAttributes() {
-    return ['backend-url'];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'backend-url' && oldValue !== newValue) {
-      this.backendUrl = newValue;
-    }
-  }
-
-  render() {
-    this.shadowRoot.innerHTML = `
+const contentTemplate = `
       <style>
         :host {
           --primary-color: #ff4757;
@@ -79,6 +55,7 @@ class OhShtButton extends HTMLElement {
         .oh-sht-textarea {
           width: 100%;
           height: 150px;
+          box-sizing: border-box;
           margin-bottom: 12px;
           padding: 8px;
           border: 1px solid #dfe4ea;
@@ -127,6 +104,7 @@ class OhShtButton extends HTMLElement {
       <div class="oh-sht-container">
         <button class="oh-sht-button">OH SHT</button>
         <div class="oh-sht-panel">
+          <!-- add a slot, branding,  etc.-->
           <h3>Report an Issue</h3>
           <textarea class="oh-sht-textarea" placeholder="Describe what happened..."></textarea>
           <div>
@@ -137,8 +115,34 @@ class OhShtButton extends HTMLElement {
           <p class="oh-sht-error">Error submitting feedback. Please try again.</p>
         </div>
       </div>
-    `;
+`;
+
+class OhShtButton extends HTMLElement {
+  constructor() {
+    super();
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = contentTemplate;
+
+    this.isOpen = false;
+    this.backendUrl = this.getAttribute('backend-url') || '/api/feedback';
   }
+
+  connectedCallback() {
+    this.render();
+    this.setupEventListeners();
+  }
+
+  static get observedAttributes() {
+    return ['backend-url'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'backend-url' && oldValue !== newValue) {
+      this.backendUrl = newValue;
+    }
+  }
+
+  render() { }
 
   setupEventListeners() {
     const button = this.shadowRoot.querySelector('.oh-sht-button');
@@ -170,23 +174,23 @@ class OhShtButton extends HTMLElement {
       const feedback = textarea.value.trim();
       if (feedback) {
         this.submitFeedback(feedback)
-          .then(() => {
-            successMsg.style.display = 'block';
-            errorMsg.style.display = 'none';
-            textarea.value = '';
-            
-            // Auto close after 3 seconds
-            setTimeout(() => {
-              panel.classList.remove('open');
-              this.isOpen = false;
+            .then(() => {
+              successMsg.style.display = 'block';
+              errorMsg.style.display = 'none';
+              textarea.value = '';
+
+              // Auto close after 3 seconds
+              setTimeout(() => {
+                panel.classList.remove('open');
+                this.isOpen = false;
+                successMsg.style.display = 'none';
+              }, 3000);
+            })
+            .catch(error => {
+              console.error('Error submitting feedback:', error);
+              errorMsg.style.display = 'block';
               successMsg.style.display = 'none';
-            }, 3000);
-          })
-          .catch(error => {
-            console.error('Error submitting feedback:', error);
-            errorMsg.style.display = 'block';
-            successMsg.style.display = 'none';
-          });
+            });
       }
     });
   }

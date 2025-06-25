@@ -1,31 +1,8 @@
-class OhShtButton extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-    this.isOpen = false;
-    this.backendUrl = this.getAttribute('backend-url') || '/api/feedback';
-  }
-
-  connectedCallback() {
-    this.render();
-    this.setupEventListeners();
-  }
-
-  static get observedAttributes() {
-    return ['backend-url'];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'backend-url' && oldValue !== newValue) {
-      this.backendUrl = newValue;
-    }
-  }
-
-  render() {
-    this.shadowRoot.innerHTML = `
+const template = `
+<template id="oh-sht-button-template">
       <style>
         :host {
-          --primary-color: #ff4757;
+          --primary-color: #004757;
           --secondary-color: #f1f2f6;
           --text-color: #2f3542;
           --shadow-color: rgba(0, 0, 0, 0.2);
@@ -125,8 +102,9 @@ class OhShtButton extends HTMLElement {
       </style>
       
       <div class="oh-sht-container">
-        <button class="oh-sht-button">OH SHT</button>
+        <button class="oh-sht-button">OH SHiT</button>
         <div class="oh-sht-panel">
+          <!-- add a slot, branding,  etc.-->
           <h3>Report an Issue</h3>
           <textarea class="oh-sht-textarea" placeholder="Describe what happened..."></textarea>
           <div>
@@ -137,8 +115,44 @@ class OhShtButton extends HTMLElement {
           <p class="oh-sht-error">Error submitting feedback. Please try again.</p>
         </div>
       </div>
-    `;
+</template>
+`;
+
+class OhShtButton extends HTMLElement {
+  constructor() {
+    super();
+    // let template = document.getElementById("oh-sht-button-template");
+    // let templateContent = template;
+
+    let buttonTemplate = document.createElement("template")
+    buttonTemplate.innerHTML = template
+
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.appendChild(buttonTemplate.cloneNode(true));
+
+    this.isOpen = false;
+    this.backendUrl = this.getAttribute('backend-url') || '/api/feedback';
   }
+
+  connectedCallback() {
+    this.render();
+    this.setupEventListeners();
+  }
+
+  static get observedAttributes() {
+    return ['backend-url'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'backend-url' && oldValue !== newValue) {
+      this.backendUrl = newValue;
+    }
+  }
+
+  // render() {
+  //   this.shadowRoot.innerHTML = `
+  //   `;
+  // }
 
   setupEventListeners() {
     const button = this.shadowRoot.querySelector('.oh-sht-button');

@@ -54,26 +54,50 @@ The `oh-sht-button` component accepts the following attributes:
 
 - `backend-url`: The URL to which the feedback data will be sent (default: '/api/feedback')
 
-### Running the Demo
+### Running the Demos
 
-To run the demo application:
+#### React Demo
+
+To run the React demo application:
 
 ```bash
-npm run start:demo
+npm run start:react
 ```
 
 This will start a React application (using Vite) that demonstrates the usage of the `oh-sht-button` component.
 
-You can also build the demo app for production:
+You can also build the React demo app for production:
 
 ```bash
-npm run build:demo
+npm run build:react
 ```
 
 And preview the production build:
 
 ```bash
-npm run preview:demo
+npm run preview:react
+```
+
+#### Simple HTML/CSS/JS Demo
+
+To run the simple HTML/CSS/JS demo:
+
+```bash
+npm run start:simple
+```
+
+This will start a simple HTML/CSS/JS application that demonstrates the usage of the `oh-sht-button` component on a basic form.
+
+You can also build the simple demo for production:
+
+```bash
+npm run build:simple
+```
+
+And preview the production build:
+
+```bash
+npm run preview:simple
 ```
 
 ## Development
@@ -81,28 +105,36 @@ npm run preview:demo
 ### Project Structure
 
 - `src/`: Contains the web component source code
-- `demo-app/`: Contains a React application that demonstrates the web component
+- `demo-react/`: Contains a React application that demonstrates the web component
+- `demo-simple/`: Contains a simple HTML/CSS/JS application that demonstrates the web component
 
 ### Local Development
 
-For local development, a symlink is required to allow the demo app to import the web component.
+For local development, symlinks are required to allow the demo apps to import the web component.
 
-The symlink is automatically created when you run the `install:all` script:
+The symlinks are automatically created when you run the `install:all` script:
 
 ```bash
 npm run install:all
 ```
 
-If you need to create the symlink manually:
+If you need to create the symlinks manually:
 
 ```bash
-cd demo-app
+# For the React demo
+cd demo-react
+ln -s .. node_modules/oh-sht
+
+# For the simple demo
+cd ../demo-simple
 ln -s .. node_modules/oh-sht
 ```
 
-This creates a symlink in the demo app's node_modules directory that points to the root of the project, allowing the import to work through the node_modules path.
+This creates symlinks in each demo app's node_modules directory that point to the root of the project, allowing the imports to work through the node_modules path.
 
-The demo app now uses Vite instead of Create React App, which provides more flexibility with imports. The component is imported in the demo app using:
+#### React Demo Import
+
+The React demo uses Vite, which provides flexibility with imports. The component is imported in the React demo using:
 
 ```javascript
 // Primary import path
@@ -111,6 +143,15 @@ import('oh-sht/src/index.js')
     // Fallback to relative path if needed
     import('../node_modules/oh-sht/src/index.js')
   });
+```
+
+#### Simple Demo Import
+
+The simple demo also uses Vite and imports the component directly:
+
+```javascript
+// Import the oh-sht button
+import '../src/index.js';
 ```
 
 Vite's import resolution is more flexible than webpack's, but we still maintain the symlink approach for compatibility.

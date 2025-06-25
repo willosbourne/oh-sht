@@ -5,10 +5,13 @@
   "main": "src/index.js",
   "scripts": {
     "build": "echo \"Build script to be implemented\"",
-    "start:demo": "cd demo-app && npm run dev",
-    "build:demo": "cd demo-app && npm run build",
-    "preview:demo": "cd demo-app && npm run preview",
-    "install:all": "npm install && cd demo-app && npm install && ln -sf ../.. node_modules/oh-sht",
+    "start:react": "cd demo-react && npm run dev",
+    "build:react": "cd demo-react && npm run build",
+    "preview:react": "cd demo-react && npm run preview",
+    "start:simple": "cd demo-simple && npm run dev",
+    "build:simple": "cd demo-simple && npm run build",
+    "preview:simple": "cd demo-simple && npm run preview",
+    "install:all": "npm install && cd demo-react && npm install && ln -sf ../.. node_modules/oh-sht && cd ../demo-simple && npm install && ln -sf ../.. node_modules/oh-sht",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

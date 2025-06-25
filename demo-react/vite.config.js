@@ -12,7 +12,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      // If needed, add aliases here
+      // Add an alias for the components directory
+      '@components': resolve(__dirname, '../components'),
     },
   },
   server: {
@@ -27,6 +28,9 @@ export default defineConfig({
         '.js': 'jsx'
       }
     },
-    include: [], // Add dependencies that need to be pre-bundled
+    include: [
+      '../components/index.js', // Include the web component for pre-bundling
+      '../components/oh-sht-button.js'
+    ],
   },
 });

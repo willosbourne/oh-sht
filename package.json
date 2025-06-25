@@ -2,7 +2,7 @@
   "name": "oh-sht",
   "version": "0.1.0",
   "description": "Web component button used to record site issues to configurable backend",
-  "main": "src/index.js",
+  "main": "components/index.js",
   "scripts": {
     "build": "echo \"Build script to be implemented\"",
     "start:react": "cd demo-react && npm run dev",

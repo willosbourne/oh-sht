@@ -104,7 +104,7 @@ npm run preview:simple
 
 ### Project Structure
 
-- `src/`: Contains the web component source code
+- `components/`: Contains the web component source code
 - `demo-react/`: Contains a React application that demonstrates the web component
 - `demo-simple/`: Contains a simple HTML/CSS/JS application that demonstrates the web component
 
@@ -138,10 +138,10 @@ The React demo uses Vite, which provides flexibility with imports. The component
 
 ```javascript
 // Primary import path
-import('oh-sht/src/index.js')
+import('oh-sht/components/index.js')
   .catch(error => {
     // Fallback to relative path if needed
-    import('../node_modules/oh-sht/src/index.js')
+    import('../node_modules/oh-sht/components/index.js')
   });
 ```
 
@@ -151,7 +151,7 @@ The simple demo also uses Vite and imports the component directly:
 
 ```javascript
 // Import the oh-sht button
-import '../src/index.js';
+import '../components/index.js';
 ```
 
 Vite's import resolution is more flexible than webpack's, but we still maintain the symlink approach for compatibility.

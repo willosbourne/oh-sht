@@ -16,29 +16,6 @@ function App() {
 
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Use effect to programmatically create and mount the web component
-  useEffect(() => {
-    // Check if the custom element is defined
-    if (customElements.get('oh-sht-button')) {
-      const container = document.getElementById('oh-sht-button-container');
-      if (container) {
-        // Clear any existing content
-        container.innerHTML = '';
-
-        // Create the web component
-        const ohShtButton = document.createElement('oh-sht-button');
-
-        // Set attributes
-        ohShtButton.setAttribute('backend-url', 'https://example.com/api/feedback');
-
-        // Append to container
-        container.appendChild(ohShtButton);
-      }
-    } else {
-      console.warn('oh-sht-button custom element not defined. Check the import.');
-    }
-  }, []); // Empty dependency array means this runs once after initial render
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -192,7 +169,10 @@ function App() {
         </div>
       )}
 
-      <div id="oh-sht-button-container"></div>
+      <oh-sht-button backend-url="https://example.com/api/feedback">
+        <span slot={"branding"}>Cool Forms.USA</span>
+        <button id={"faq"} slot={"faq"} onClick={() => console.log('nav to faq')}>FAQ</button>
+      </oh-sht-button>
     </div>
   );
 }

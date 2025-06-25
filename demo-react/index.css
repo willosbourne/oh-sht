@@ -65,7 +65,7 @@ select {
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: #4CAF50 !important;
   color: white;
   border: none;
   padding: 12px 20px;

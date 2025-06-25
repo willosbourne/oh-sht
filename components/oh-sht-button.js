@@ -88,6 +88,17 @@ const contentTemplate = `
           margin-left: 8px;
         }
         
+        ::slotted(button) {
+          background-color: var(--secondary-color) !important;
+          color: var(--text-color) !important;
+          border: none !important;
+          border-radius: 4px !important;
+          padding: 8px 16px !important;
+          cursor: pointer !important;
+          margin-left: 8px !important;
+          font-size: 13px !important;
+        }
+        
         .oh-sht-success {
           display: none;
           color: green;
@@ -105,11 +116,13 @@ const contentTemplate = `
         <button class="oh-sht-button">OH SHT</button>
         <div class="oh-sht-panel">
           <!-- add a slot, branding,  etc.-->
+          <slot name="branding"></slot>
           <h3>Report an Issue</h3>
           <textarea class="oh-sht-textarea" placeholder="Describe what happened..."></textarea>
           <div>
             <button class="oh-sht-submit">Submit</button>
             <button class="oh-sht-cancel">Cancel</button>
+            <slot name="faq"></slot>
           </div>
           <p class="oh-sht-success">Thank you! Your feedback has been submitted.</p>
           <p class="oh-sht-error">Error submitting feedback. Please try again.</p>

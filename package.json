@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Web component button used to record site issues to configurable backend",
   "main": "components/index.js",
+  "dependencies": {
+    "html2canvas": "^1.4.1"
+  },
   "scripts": {
     "build": "echo \"Build script to be implemented\"",
     "start:react": "cd demo-react && npm run dev",

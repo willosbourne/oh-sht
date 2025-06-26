@@ -1,3 +1,5 @@
+import html2canvas from 'html2canvas';
+
 const contentTemplate = `
       <style>
         :host {
@@ -227,33 +229,45 @@ class OhShtButton extends HTMLElement {
   }
 
   async captureScreenshot() {
-    // Simple implementation that creates a blank canvas with viewport dimensions
-    // In a real implementation, this would use html2canvas or similar library
+    // Use html2canvas to capture the actual page content
     return new Promise((resolve) => {
       try {
-        // Create a canvas element
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+        // Hide the oh-sht panel temporarily to avoid capturing it in the screenshot
+        const panel = this.shadowRoot.querySelector('.oh-sht-panel');
+        const wasOpen = panel.classList.contains('open');
+        if (wasOpen) {
+          panel.classList.remove('open');
+        }
 
-        // Set canvas dimensions to match viewport
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // Use html2canvas to capture the entire document body
+        html2canvas(document.body, {
+          allowTaint: true,
+          useCORS: true,
+          logging: false,
+          scale: window.devicePixelRatio
+        }).then(canvas => {
+          // Restore the panel if it was open
+          if (wasOpen) {
+            panel.classList.add('open');
+          }
 
-        // Fill with a light background to indicate it's a screenshot
-        context.fillStyle = '#f9f9f9';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+          // Add timestamp and URL as an overlay
+          const context = canvas.getContext('2d');
+          context.font = '14px Arial';
+          context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+          context.fillRect(0, 0, canvas.width, 40);
+          context.fillStyle = 'white';
+          context.fillText('Screenshot captured at ' + new Date().toLocaleString(), 10, 25);
 
-        // Add some text to indicate this is a screenshot
-        context.font = '20px Arial';
-        context.fillStyle = '#333';
-        context.fillText('Screenshot captured at ' + new Date().toLocaleString(), 20, 40);
-        context.fillText('URL: ' + window.location.href, 20, 70);
-
-        // Convert to data URL
-        const screenshot = canvas.toDataURL('image/png');
-        resolve(screenshot);
+          // Convert to data URL
+          const screenshot = canvas.toDataURL('image/png');
+          resolve(screenshot);
+        }).catch(error => {
+          console.error('Error capturing screenshot with html2canvas:', error);
+          resolve(null);
+        });
       } catch (error) {
-        console.error('Error capturing screenshot:', error);
+        console.error('Error setting up screenshot capture:', error);
         resolve(null);
       }
     });

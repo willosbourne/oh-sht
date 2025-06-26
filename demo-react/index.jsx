@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 
-// Import the Oh SHT button web component directly from the project
+// Import the Oh SHT button web component directly from the project.
 // This static import ensures the component is loaded and registered before React renders
+// Theoretically, this could come from NPM or a CDN, but for this example, we use a local file
 import '@components/index.js';
 
 // Ensure the custom element is defined before rendering

@@ -29,10 +29,8 @@ function App() {
       }
     };
 
-    // Add event listener when component mounts
     document.addEventListener('oh-sht-button-pressed', handleOhShtButtonPressed);
 
-    // Remove event listener when component unmounts
     return () => {
       document.removeEventListener('oh-sht-button-pressed', handleOhShtButtonPressed);
     };
@@ -61,10 +59,8 @@ function App() {
     e.preventDefault();
     console.log('Form submitted:', formData);
 
-    // Show success message
     setShowSuccess(true);
 
-    // Reset form after submission
     setFormData({
       name: '',
       email: '',
@@ -78,7 +74,6 @@ function App() {
       }
     });
 
-    // Hide success message after 3 seconds
     setTimeout(() => {
       setShowSuccess(false);
     }, 3000);

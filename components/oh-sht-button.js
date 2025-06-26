@@ -139,6 +139,7 @@ class OhShtButton extends HTMLElement {
     this.isOpen = false;
     this.backendUrl = this.getAttribute('backend-url') || '/api/feedback';
     this.additionalReportData = null;
+    this.currentScreenshot = null;
   }
 
   connectedCallback() {
@@ -171,6 +172,12 @@ class OhShtButton extends HTMLElement {
       this.isOpen = !this.isOpen;
       if (this.isOpen) {
         panel.classList.add('open');
+
+        // Take a screenshot when the panel is opened
+        this.captureScreenshot().then(screenshot => {
+          this.currentScreenshot = screenshot;
+        });
+
         // Dispatch custom event when button is clicked and panel opens
         this.dispatchEvent(new CustomEvent('oh-sht-button-pressed', {
           bubbles: true,
@@ -219,14 +226,55 @@ class OhShtButton extends HTMLElement {
     });
   }
 
+  async captureScreenshot() {
+    // Simple implementation that creates a blank canvas with viewport dimensions
+    // In a real implementation, this would use html2canvas or similar library
+    return new Promise((resolve) => {
+      try {
+        // Create a canvas element
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        // Set canvas dimensions to match viewport
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Fill with a light background to indicate it's a screenshot
+        context.fillStyle = '#f9f9f9';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Add some text to indicate this is a screenshot
+        context.font = '20px Arial';
+        context.fillStyle = '#333';
+        context.fillText('Screenshot captured at ' + new Date().toLocaleString(), 20, 40);
+        context.fillText('URL: ' + window.location.href, 20, 70);
+
+        // Convert to data URL
+        const screenshot = canvas.toDataURL('image/png');
+        resolve(screenshot);
+      } catch (error) {
+        console.error('Error capturing screenshot:', error);
+        resolve(null);
+      }
+    });
+  }
+
   async submitFeedback(feedback) {
     try {
+      // Use the screenshot captured when the panel was opened
+      const screenshot = this.currentScreenshot;
+
       const payload = {
         feedback,
         timestamp: new Date().toISOString(),
         url: window.location.href,
         userAgent: navigator.userAgent
       };
+
+      // Include screenshot if available
+      if (screenshot) {
+        payload.screenshot = screenshot;
+      }
 
       // Include additional form data if available
       if (this.additionalReportData) {

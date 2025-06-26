@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 function App() {
+  const ohShtButtonRef = useRef(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,6 +16,27 @@ function App() {
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    // Add event listener for the oh-sht-button-pressed event
+    const handleOhShtButtonPressed = (event) => {
+      // Get the callback function from the event detail
+      const { callback } = event.detail;
+
+      // Call the callback with the current form data
+      if (callback && typeof callback === 'function') {
+        callback(formData);
+      }
+    };
+
+    // Add event listener when component mounts
+    document.addEventListener('oh-sht-button-pressed', handleOhShtButtonPressed);
+
+    // Remove event listener when component unmounts
+    return () => {
+      document.removeEventListener('oh-sht-button-pressed', handleOhShtButtonPressed);
+    };
+  }, [formData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -169,7 +191,10 @@ function App() {
         </div>
       )}
 
-      <oh-sht-button backend-url="https://example.com/api/feedback">
+      <oh-sht-button 
+        ref={(el) => { ohShtButtonRef.current = el; }}
+        backend-url="https://example.com/api/feedback"
+      >
         <span slot={"branding"}>Cool Forms.USA</span>
         <button id={"faq"} slot={"faq"} onClick={() => console.log('nav to faq')}>FAQ</button>
       </oh-sht-button>

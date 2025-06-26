@@ -6,7 +6,7 @@ const contentTemplate = `
           --text-color: #2f3542;
           --shadow-color: rgba(0, 0, 0, 0.2);
         }
-        
+
         .oh-sht-container {
           position: fixed;
           bottom: 20px;
@@ -14,7 +14,7 @@ const contentTemplate = `
           z-index: 9999;
           font-family: Arial, sans-serif;
         }
-        
+
         .oh-sht-button {
           width: 60px;
           height: 60px;
@@ -31,11 +31,11 @@ const contentTemplate = `
           font-size: 14px;
           transition: transform 0.3s ease;
         }
-        
+
         .oh-sht-button:hover {
           transform: scale(1.05);
         }
-        
+
         .oh-sht-panel {
           display: none;
           position: absolute;
@@ -47,11 +47,11 @@ const contentTemplate = `
           box-shadow: 0 4px 12px var(--shadow-color);
           padding: 16px;
         }
-        
+
         .oh-sht-panel.open {
           display: block;
         }
-        
+
         .oh-sht-textarea {
           width: 100%;
           height: 150px;
@@ -63,7 +63,7 @@ const contentTemplate = `
           resize: none;
           font-family: inherit;
         }
-        
+
         .oh-sht-submit {
           background-color: var(--primary-color);
           color: white;
@@ -73,11 +73,11 @@ const contentTemplate = `
           cursor: pointer;
           font-weight: bold;
         }
-        
+
         .oh-sht-submit:hover {
           opacity: 0.9;
         }
-        
+
         .oh-sht-cancel {
           background-color: var(--secondary-color);
           color: var(--text-color);
@@ -87,7 +87,7 @@ const contentTemplate = `
           cursor: pointer;
           margin-left: 8px;
         }
-        
+
         ::slotted(button) {
           background-color: var(--secondary-color) !important;
           color: var(--text-color) !important;
@@ -98,20 +98,20 @@ const contentTemplate = `
           margin-left: 8px !important;
           font-size: 13px !important;
         }
-        
+
         .oh-sht-success {
           display: none;
           color: green;
           margin-top: 8px;
         }
-        
+
         .oh-sht-error {
           display: none;
           color: red;
           margin-top: 8px;
         }
       </style>
-      
+
       <div class="oh-sht-container">
         <button class="oh-sht-button">OH SHT</button>
         <div class="oh-sht-panel">
@@ -138,6 +138,7 @@ class OhShtButton extends HTMLElement {
 
     this.isOpen = false;
     this.backendUrl = this.getAttribute('backend-url') || '/api/feedback';
+    this.additionalReportData = null;
   }
 
   connectedCallback() {
@@ -170,6 +171,16 @@ class OhShtButton extends HTMLElement {
       this.isOpen = !this.isOpen;
       if (this.isOpen) {
         panel.classList.add('open');
+        // Dispatch custom event when button is clicked and panel opens
+        this.dispatchEvent(new CustomEvent('oh-sht-button-pressed', {
+          bubbles: true,
+          composed: true,
+          detail: {
+            callback: (additionalData) => {
+              this.additionalReportData = additionalData;
+            }
+          }
+        }));
       } else {
         panel.classList.remove('open');
       }
@@ -210,17 +221,26 @@ class OhShtButton extends HTMLElement {
 
   async submitFeedback(feedback) {
     try {
+      const payload = {
+        feedback,
+        timestamp: new Date().toISOString(),
+        url: window.location.href,
+        userAgent: navigator.userAgent
+      };
+
+      // Include additional form data if available
+      if (this.additionalReportData) {
+        payload.additionalReportData = this.additionalReportData;
+      }
+
+      console.log('Submitting feedback:', payload);
+
       const response = await fetch(this.backendUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          feedback,
-          timestamp: new Date().toISOString(),
-          url: window.location.href,
-          userAgent: navigator.userAgent
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {

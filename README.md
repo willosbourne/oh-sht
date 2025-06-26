@@ -54,6 +54,50 @@ The `oh-sht-button` component accepts the following attributes:
 
 - `backend-url`: The URL to which the feedback data will be sent (default: '/api/feedback')
 
+### Advanced Features
+
+The `oh-sht-button` component includes several advanced features:
+
+#### Screenshot Capture
+
+When the button is clicked, the component automatically captures a screenshot of the current page using html2canvas. This screenshot is included in the feedback submission.
+
+#### Custom Events
+
+The component dispatches a custom event when the button is clicked:
+
+- `oh-sht-button-pressed`: Fired when the button is clicked and the panel opens. The event includes a callback function that can be used to provide additional data to include in the feedback submission.
+
+Example usage:
+
+```javascript
+document.addEventListener('oh-sht-button-pressed', (event) => {
+  // Add additional data to the feedback submission
+  event.detail.callback({
+    userId: 'user123',
+    sessionId: 'session456'
+  });
+});
+```
+
+#### Customization Slots
+
+The component provides slots for customization:
+
+- `branding`: A slot for adding branding elements to the feedback panel
+- `faq`: A slot for adding FAQ or help links to the feedback panel
+
+Example usage:
+
+```html
+<oh-sht-button backend-url="https://your-api-endpoint.com/feedback">
+  <div slot="branding">
+    <img src="logo.png" alt="Company Logo">
+  </div>
+  <button slot="faq">Help</button>
+</oh-sht-button>
+```
+
 ### Running the Demos
 
 #### React Demo
@@ -123,11 +167,11 @@ If you need to create the symlinks manually:
 ```bash
 # For the React demo
 cd demo-react
-ln -s .. node_modules/oh-sht
+ln -sf ../.. node_modules/oh-sht
 
 # For the simple demo
 cd ../demo-simple
-ln -s .. node_modules/oh-sht
+ln -sf ../.. node_modules/oh-sht
 ```
 
 This creates symlinks in each demo app's node_modules directory that point to the root of the project, allowing the imports to work through the node_modules path.
